@@ -1,0 +1,3 @@
+# SPDX-FileCopyrightText: 2023-present James Dow <jamesdow21@gmail.com>
+#
+# SPDX-License-Identifier: MIT
