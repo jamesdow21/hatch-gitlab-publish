@@ -13,7 +13,7 @@ authors = [
   { name = "James Dow", email = "jamesdow21@gmail.com" },
 ]
 classifiers = [
-  "Development Status :: 4 - Beta",
+  "Development Status :: 2 - Pre-Alpha",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
@@ -21,6 +21,7 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: Implementation :: CPython",
+  "Framework :: Hatch",
 ]
 dependencies = ["hatch"]
 dynamic = ["version"]
@@ -29,6 +30,9 @@ dynamic = ["version"]
 Documentation = "https://github.com/jamesdow21/hatch-gitlab-publish#readme"
 Issues = "https://github.com/jamesdow21/hatch-gitlab-publish/issues"
 Source = "https://github.com/jamesdow21/hatch-gitlab-publish"
+
+[project.entry-points.hatch]
+gitlab-publish = "hatch_gitlab_publish.hooks"
 
 [tool.hatch.version]
 path = "src/hatch_gitlab_publish/__about__.py"
@@ -58,3 +62,51 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
 ]
+
+[tool.hatch.envs.lint]
+detached = true
+dependencies = [
+  "flake8==6.0.0",
+  "flake8-bugbear",
+  "flake8-builtins",
+  "flake8-comprehensions",
+  "pep8-naming",
+  "autoflake",
+  "pyupgrade",
+  "bandit[toml]==1.7.4",
+  "black==22.8.0",
+  "isort==5.12.0",
+]
+[tool.hatch.envs.lint.scripts]
+check = [
+  "flake8 .",
+  "bandit -c pyproject.toml -r .",
+  "black --check --diff .",
+  "isort --check-only --diff .",
+]
+fmt = [
+  "isort .",
+  "black .",
+  "autoflake -r .",
+  "check",
+]
+
+[tool.hatch.envs.precommit]
+detached = true
+dependencies = [
+  "pre-commit"
+]
+post-install-commands = [
+  "pre-commit install",
+  "pre-commit run --all-files"
+]
+scripts.run = "pre-commit run --all-files"
+
+[tool.isort]
+profile = "black"
+py_version = 310
+extend_skip = [".hatch"]
+
+[tool.bandit]
+exclude_dirs = ["/tests", "/.hatch", "/venv", "/dist", "/build", "log"]
+skips = ["B101"]
